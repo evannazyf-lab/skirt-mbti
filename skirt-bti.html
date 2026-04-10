@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>👗 裙装 MBTI (Skbti) 灵魂战袍测试</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #ff7b89; /* 温柔珊瑚粉 */
+            --secondary-color: #f7a8b8;
+            --bg-color: #faf8f5; /* 奶油白背景 */
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #888888;
+            --accent-color: #e2c08d; /* 香槟金 */
+        }
+        body {
+            font-family: "PingFang SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(#e2c08d 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
+        }
+        .container {
+            width: 92%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+        .screen {
+            display: none;
+            padding: 50px 30px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            text-align: center;
+            animation: fadeIn 0.4s ease-out;
+        }
+        .screen.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            color: var(--text-main);
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 800;
+        }
+        .sub-title {
+            color: var(--primary-color);
+            font-size: 16px;
+            margin-bottom: 25px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: bold;
+            width: 100%;
+            max-width: 320px;
+            box-shadow: 0 5px 15px rgba(255, 123, 137, 0.3);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 123, 137, 0.4);
+        }
+        .btn-option {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            border: 1px solid #eeeeee;
+            margin-bottom: 15px;
+            text-align: left;
+            padding: 20px;
+            font-weight: normal;
+            font-size: 16px;
+            border-radius: 12px;
+            box-shadow: none;
+        }
+        .btn-option:hover {
+            border-color: var(--primary-color);
+            background-color: #fffafb;
+            transform: none;
+            box-shadow: 0 4px 10px rgba(255, 123, 137, 0.08);
+        }
+        .btn-option span.option-tag {
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: left;
+            width: 100%;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #f0f0f0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* 结果海报/拍立得样式 */
+        .id-card-wrapper {
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        .id-card {
+            width: 100%;
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 30px 25px;
+            text-align: left;
+            border: 1px solid #f0f0f0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+            color: var(--text-main);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .id-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 10px;
+        }
+        .id-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+        .id-title-main { font-size: 20px; font-weight: 800; }
+        
+        .id-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            padding: 15px 0;
+        }
+        .id-mbti-code { font-size: 42px; font-weight: 900; color: var(--primary-color); letter-spacing: 2px; line-height: 1; font-family: Impact, sans-serif;}
+        .id-skirt-name { font-size: 22px; font-weight: bold; background: linear-gradient(transparent 60%, rgba(255, 123, 137, 0.3) 60%); display: inline-block; padding: 0 5px;}
+        
+        .id-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-main);
+            text-align: justify;
+        }
+        .id-burn {
+            font-size: 13px;
+            background-color: #f9f9f9;
+            color: #666;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #ccc;
+        }
+        .id-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px dashed #eee;
+        }
+
+        #poster-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(255,255,255,0.95);
+            z-index: 100; justify-content: center; align-items: center;
+            flex-direction: column; padding: 20px;
+        }
+        #poster-overlay.active { display: flex; }
+        #poster-preview {
+            max-width: 100%;
+            max-height: 75%;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+        .author-tag {
+            font-size: 12px;
+            color: #ccc;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+    <div class="screen active" id="start-screen">
+        <h1>裙装 MBTI 测试</h1>
+        <div class="sub-title">测测你的灵魂本命战袍</div>
+        <p style="margin-bottom: 10px;">15道日常小选择，拒绝身材焦虑。<br>找出最契合你灵魂底色的那条裙子！</p>
+        
+        <div class="author-tag">制作人：章鱼饭</div>
+        
+        <button class="btn" onclick="startQuiz()">开始测试</button>
+    </div>
+
+    <div class="screen" id="quiz-screen">
+        <p id="q-counter" style="margin-bottom: 15px; width: 100%; text-align: left; font-size: 14px; color: var(--primary-color); font-weight: bold;">Q 1/15</p>
+        <div class="question-text" id="q-text">题目加载中...</div>
+        <button class="btn btn-option" id="btn-a" onclick="selectOption('A')"><span>A</span> 选项 A</button>
+        <button class="btn btn-option" id="btn-b" onclick="selectOption('B')"><span>B</span> 选项 B</button>
+    </div>
+
+    <div class="screen" id="result-screen">
+        <p style="margin-bottom: 10px;">你的灵魂战袍已生成：</p>
+        
+        <div class="id-card-wrapper">
+            <div class="id-card" id="id-card-capture">
+                <div class="id-header">
+                    <div class="id-title-main">SKBTI 鉴定报告</div>
+                    <div class="id-label">Fashion Profile</div>
+                </div>
+                
+                <div class="id-body">
+                    <div class="id-mbti-code" id="res-code">ESTP</div>
+                    <div class="id-skirt-name" id="res-title">开叉鱼尾裙</div>
+                </div>
+                
+                <div class="id-desc" id="res-desc">
+                    你就是那个步步生莲、危险又迷人的都市小妖精。
+                </div>
+                <div class="id-burn">
+                    <strong style="color:#555;">💡 辣评：</strong>
+                    <span id="res-burn">虽然走起路来摇曳生姿，但开叉的设计其实是为了赶地铁时能迈开腿狂奔。</span>
+                </div>
+                
+                <div class="id-footer">
+                    <span>Est. 2026</span>
+                    <span style="font-weight: bold; color: var(--text-main);">制作人：章鱼饭</span>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" style="margin-top: 25px;" onclick="generatePoster()">📸 生成我的专属海报</button>
+        <button class="btn" style="margin-top: 15px; background: none; color: var(--text-muted); box-shadow: none; border: 1px solid #ddd;" onclick="location.reload()">再测一次</button>
+    </div>
+</div>
+
+<div id="poster-overlay">
+    <img id="poster-preview" src="" alt="海报预览">
+    <p style="color: var(--text-main); margin-bottom: 20px; font-weight: bold;">长按上方图片保存，分享到朋友圈吧！</p>
+    <button class="btn" style="width: 200px;" onclick="closePoster()">返回</button>
+</div>
+
+<script>
+    const questions = [
+        { q: "早上醒来，发现离部门的早会只剩20分钟，你的反应是：", a: "特种兵附体，抓起硬挺抗皱的衣服就跑。", b: "优雅认命，挑一件舒服柔软的衣服，顺便买杯咖啡去挨骂。", valA: "E", valB: "R" },
+        { q: "周末去Livehouse，台上的吉他手正在飙一段丝滑的John Mayer式Solo，你在台下：", a: "忍不住盯紧他的效果器矩阵，内心暗爽“这法兹音色绝了”。", b: "闭眼沉醉，身体跟着温柔的旋律轻轻摇摆。", valA: "E", valB: "R" },
+        { q: "面对一个突发的热点营销策划任务，你的工作状态通常是：", a: "戴上降噪耳机，生人勿近，键盘敲出火星子疯狂输出。", b: "先去茶水间转一圈，点杯奶茶和同事八卦一下找找灵感。", valA: "E", valB: "R" },
+        { q: "你的假期旅行箱里，衣服的构成通常是：", a: "能少带就少带，主打一个轻便、百搭、好洗不出错。", b: "各种氛围感长裙必须带够，哪怕不穿也要留着以备不时之需。", valA: "S", valB: "L" },
+        { q: "走在街上，不经意间看到旁边商铺的玻璃反光，你会：", a: "迅速确认一下今天的身材比例和腿部线条，走出超模步伐。", b: "欣赏一下今天整体穿搭的氛围感和走动时的裙摆弧度。", valA: "S", valB: "L" },
+        { q: "如果要去公园草地上野餐，你的真实看法是：", a: "坐下就起不来，还要提防虫子，不如去店里喝下午茶。", b: "绝佳的出片圣地！必须铺好格子布，把仪式感拉满。", valA: "S", valB: "L" },
+        { q: "办公室的空调突然开得像冰窖一样冷，你会：", a: "默默忍受，或者去走廊接水趁机活动一下取暖。", b: "从容地从抽屉里掏出一条准备好的厚毯子把自己裹起来。", valA: "S", valB: "L" },
+        { q: "如果你的另一半留着一头比你还长、发质比你还好的头发，两人一起出门约会时你会：", a: "默默激起胜负欲，今天的气场和曲线必须压过他。", b: "欣赏这种充满艺术气息的氛围感，走在一起觉得很搭。", valA: "T", valB: "F" },
+        { q: "遇到那种“既要、又要、还要”的难搞客户或老板，你内心的真实写照是：", a: "表面微笑，随时准备掏出严密的逻辑反驳回去。", b: "随便吧，毁灭吧，我只是一条没有骨头的咸鱼。", valA: "T", valB: "F" },
+        { q: "去吃一顿超级豪华的自助大餐，你的策略是：", a: "保持克制，只吃最贵的几样，绝不能让修身的衣服勒肚子。", b: "敞开肚皮吃！扶墙进扶墙出，谁也别想拦我。", valA: "T", valB: "F" },
+        { q: "你手机相册里的自拍，大多数是哪种风格？", a: "找好光线和角度，凹出最完美的下颌线和身材曲线。", b: "搞怪的、对镜随手拍的、加了奇奇怪怪滤镜的抓拍。", valA: "T", valB: "F" },
+        { q: "如果你要给自己写一段代码或者做一个自动化小工具，你的习惯是：", a: "命名规范，逻辑严密，连缩进都强迫症般对齐。", b: "跑通就行！满篇的 test1、final_v2，主打一个随性。", valA: "J", valB: "P" },
+        { q: "打开你的苹果电脑，你的桌面通常是：", a: "极简壁纸，文件分门别类放在文件夹里，干干净净。", b: "铺满了各种临时截图、表情包和下载文件，乱中求序。", valA: "J", valB: "P" },
+        { q: "去参加一个重要的行业发布会（比如在戛纳或者SXSW），你会倾向于：", a: "选择剪裁得体、经典不出错的干练正装或小黑裙。", b: "必须带点设计感或小巧思，绝不平庸，想要惊艳全场。", valA: "J", valB: "P" },
+        { q: "对于“时尚”这件事，你最认同的一句话是：", a: "经典永不过时 (Classic is forever)。", b: "规矩就是用来打破的 (Rules are meant to be broken)。", valA: "J", valB: "P" }
+    ];
+
+    const results = {
+        "ESTJ": { name: "皮裙 (Leather)", desc: "气场两米八的职场女王，走到哪里都是你的主场。", burn: "走起路来像去收购对面公司的，但其实开会时满脑子想的都是下班吃什么。" },
+        "ESTP": { name: "不规则短裙 (Asym Mini)", desc: "绝不按常理出牌的辣妹，永远走在潮流的最前线。", burn: "看着生人勿近不好惹，其实是个社交悍匪，且非常容易被路边的小猫小狗拐跑。" },
+        "ESFJ": { name: "牛仔短裙 (Denim Mini)", desc: "青春无敌的活力实干家，元气满满的行动派。", burn: "衣柜里可能有10件一模一样不同水洗色的牛仔裙，主打一个不用动脑子就能出门。" },
+        "ESFP": { name: "工装短裙 (Cargo Mini)", desc: "又酷又飒的创意发电机，随时准备开启一场冒险。", burn: "裙子上的口袋多到可以装下整个宇宙，但找一支口红的时候还是要把包翻个底朝天。" },
+        "ELTJ": { name: "毛呢包臀裙 (Tweed Pencil)", desc: "高智感都市女魔头，优雅中透着不容置疑的专业。", burn: "工作时逻辑缜密无懈可击，但吃完丰盛的午餐后，只想在工位上偷偷解开裙子的一颗扣子。" },
+        "ELTP": { name: "开叉鱼尾裙 (Slit Mermaid)", desc: "步步生莲的迷人精，举手投足间散发着危险的魅力。", burn: "虽然走起路来摇曳生姿风情万种，但开叉的设计其实是为了赶地铁时能迈开腿狂奔。" },
+        "ELFJ": { name: "直筒长裙 (Straight Midi)", desc: "极简主义的冷感知识分子，散发着高级的文艺气息。", burn: "看似看破红尘的文艺青年，其实长裙之下可能穿着一双极其舒适的老头乐拖鞋。" },
+        "ELFP": { name: "马面裙 (Mamian)", desc: "文化底蕴深厚的东方美人，飒爽英姿中带着古典韵味。", burn: "转身时裙摆像在释放强大的结界，然而下一秒可能会直接撩起裙摆熟练地跨上共享单车。" },
+        "RSTJ": { name: "学院风百褶裙 (JK Uniform)", desc: "永远年轻的热血少女，对世界保持着最纯粹的好奇。", burn: "看着乖巧懂事温婉可人，但你永远不知道她看似平静的耳机里是不是在放着重金属摇滚。" },
+        "RSTP": { name: "荷叶边短裙 (Ruffle Mini)", desc: "甜美中带着古灵精怪，让人捉摸不透的百变小樱。", burn: "外表像一颗包装精美的法式软糖，但咬下去可能是滋滋作响的跳跳糖口味。" },
+        "RSFJ": { name: "A字短裙 (A-line Mini)", desc: "人见人爱的满分甜妹，像春日里的微风一样舒服。", burn: "亲和力爆表，是所有人的开心果，但一生都在和“风太大裙子被吹起来”作斗争。" },
+        "RSFP": { name: "蛋糕裙 (Tiered Bubble)", desc: "浪漫至极的在逃公主，永远热爱生活里的小确幸。", burn: "穿着最复杂的层层叠叠蛋糕裙，做着最快乐的干饭人，吃再多也看不出小肚子。" },
+        "RLTJ": { name: "丝绸茶歇裙 (Satin Tea)", desc: "慵懒随性的法式女郎，有一种毫不费力的高级感。", burn: "成功营造出一种刚睡醒般的松弛感，只有你知道出门前光是熨平这条裙子就花了半小时。" },
+        "RLTP": { name: "波西米亚裙 (Boho)", desc: "灵魂永远在路上的自由风，不受任何世俗框架的拘束。", burn: "看起来像是刚从大理采风回来充满艺术气息，其实只是今天起晚了随手套了一件最宽大的。" },
+        "RLFJ": { name: "洛丽塔/伞裙 (Lolita Umbrella)", desc: "内心住着童话的造梦师，用裙摆撑起属于自己的世界。", burn: "裙摆撑起的完美弧度是你坚不可摧的安全感，虽然坐地铁过闸机的时候经常被卡住。" },
+        "RLFP": { name: "仙女纱裙 (Tulle Tutu)", desc: "仙气飘飘的浪漫主义者，走到哪里都自带柔光滤镜。", burn: "自带干冰特效的唯美仙女，但上班时经常需要提防裙摆会不会被办公椅的轮子无情卷进去。" }
+    };
+
+    let currentQ = 0;
+    let scores = { E:0, R:0, S:0, L:0, T:0, F:0, J:0, P:0 };
+
+    function startQuiz() {
+        document.getElementById('start-screen').classList.remove('active');
+        document.getElementById('quiz-screen').classList.add('active');
+        renderQ();
+    }
+
+    function renderQ() {
+        let q = questions[currentQ];
+        document.getElementById('q-counter').innerText = `第 ${currentQ + 1} 题 / 共 15 题`;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('btn-a').innerHTML = `<span class="option-tag">A</span> ${q.a}`;
+        document.getElementById('btn-b').innerHTML = `<span class="option-tag">B</span> ${q.b}`;
+        document.getElementById('progress').style.width = `${((currentQ) / questions.length) * 100}%`;
+    }
+
+    function selectOption(opt) {
+        let q = questions[currentQ];
+        if (opt === 'A') scores[q.valA]++;
+        if (opt === 'B') scores[q.valB]++;
+        
+        currentQ++;
+        if (currentQ < questions.length) {
+            renderQ();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('progress').style.width = `100%`;
+        let finalCode = "";
+        finalCode += (scores.E >= scores.R) ? "E" : "R";
+        finalCode += (scores.S >= scores.L) ? "S" : "L";
+        finalCode += (scores.T >= scores.F) ? "T" : "F";
+        finalCode += (scores.J >= scores.P) ? "J" : "P";
+
+        document.getElementById('quiz-screen').classList.remove('active');
+        document.getElementById('result-screen').classList.add('active');
+        
+        document.getElementById('res-code').innerText = finalCode;
+        const res = results[finalCode] || { name: "限量款高定", desc: "品味过于独特，超越了常规测试的范畴。", burn: "太特别了，以至于系统无法解析你的穿搭逻辑。" };
+        document.getElementById('res-title').innerText = res.name;
+        document.getElementById('res-desc').innerText = res.desc;
+        document.getElementById('res-burn').innerText = res.burn;
+    }
+
+    function generatePoster() {
+        const idCard = document.getElementById('id-card-capture');
+        
+        html2canvas(idCard, {
+            scale: 3, // 高清渲染
+            backgroundColor: "#ffffff",
+            logging: false
+        }).then(canvas => {
+            const dataUrl = canvas.toDataURL("image/png");
+            document.getElementById('poster-preview').src = dataUrl;
+            document.getElementById('poster-overlay').classList.add('active');
+        });
+    }
+
+    function closePoster() {
+        document.getElementById('poster-overlay').classList.remove('active');
+    }
+</script>
+
+</body>
+</html>
